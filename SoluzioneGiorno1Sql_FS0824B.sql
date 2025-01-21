@@ -77,7 +77,26 @@ INSERT INTO fatture (tipologia, importo, iva, id_cliente, data_fattura, numero_f
 			VALUES   ('A', 890.99, 20, 2, '2025-01-12', 1),
 					 ('B', 19.90, 10, 1, '2025-01-14', 3),
 					 ('A', 2500.00, 20, 4, '2025-01-18', 2)
+INSERT INTO fatture (tipologia, importo, iva, id_cliente, data_fattura, numero_fornitore)
+			VALUES   ('C', 25.99, 20, 1, '2024-01-12', 1)
 SELECT * FROM fatture;
 
 SELECT * FROM clienti WHERE nome = 'Mario';
 SELECT nome, cognome FROM clienti WHERE anno_di_nascita = 1982;
+SELECT count(*) AS NumeroFatture_20 FROM fatture WHERE iva = 20;
+SELECT * FROM prodotti 
+	WHERE EXTRACT(YEAR FROM data_attivazione) = 2024 
+	AND (in_produzione = true OR in_commercio = true);
+SELECT * FROM fatture 
+		INNER JOIN clienti ON fatture.id_cliente = clienti.numero_cliente
+		WHERE fatture.importo < 1000;
+SELECT numero_fattura, importo, iva, data_fattura, denominazione FROM fatture
+		INNER JOIN fornitori ON fatture.numero_fornitore = fornitori.numero_fornitore;
+SELECT count(*) AS NumeroFatture, EXTRACT(YEAR FROM data_fattura) AS Anno  
+	FROM fatture WHERE iva = 20 GROUP BY EXTRACT(YEAR FROM data_fattura)
+SELECT count(*) AS NumeroFatture, sum(importo) AS SommaImporto, EXTRACT(YEAR FROM data_fattura) 
+	FROM fatture GROUP BY EXTRACT(YEAR FROM data_fattura)
+
+
+
+

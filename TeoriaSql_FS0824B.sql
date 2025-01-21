@@ -28,7 +28,7 @@
 
 DROP TABLE public.user;
 CREATE TABLE public.user ( 
-	id SERIAL NOT NULL PRIMARY KEY,
+	user_id SERIAL NOT NULL PRIMARY KEY,
 	name VARCHAR(25) NOT NULL,
 	lastname VARCHAR(50) NOT NULL,
 	age INT NULL DEFAULT 18,
@@ -69,17 +69,60 @@ INSERT INTO public.user (firstname, lastname, age, city, fiscal_code)
 			VALUES  ('Mario', 'Rossi', 23, 'Roma', 'AB123CD45E678PQO'),
 					('Giuseppe', 'Verdi', 49, 'Milano', 'AB123CD45E678WER'),
 					('Francesca', 'Neri', 33, 'Palermo', 'AB456CD45E678PQO');
+INSERT INTO public.user (firstname, lastname, age, city, fiscal_code)
+			VALUES  ('Antonio', 'Bianchi', 40, 'Torino', 'AB789CD45E678PQO');
+INSERT INTO public.user (firstname, lastname, age, city, fiscal_code)
+			VALUES  ('Luigi', 'Viola', 60, 'Milano', 'AB789CD49E678PQO');
 					
 INSERT INTO public.signin (email, password, user_id) 
 			VALUES  ('m.rossi@example.com', 'qwerty', 1),
 					('g.verdi@example.com', 'Pa$$w0rd!', 2),
 					('f.neri@example.com', '12345', 3);
 
-UPDATE public.user SET age = 99 WHERE id = 2;
+UPDATE public.user SET age = 99, city= 'Torino' WHERE id = 2;
 
 DELETE FROM public.user WHERE id = 2;
 
 -- DQL
+-- SELECT -> Un elenco di campi o tutto (*) che voglio restituire
+-- FROM -> indica la sorgente di dati
+-- WHERE -> condizione della select
+-- GROUP BY -> aggrega dei dati 
+-- HAVING -> filtro sui dati aggregati con il GROUP BY
+-- ORDER BY -> Ordinare i dati 
+-- LIMIT -> selezionare un numero definito di record
 
-SELECT * FROM public.user;
+/*
+SELECT [DISTINCT] column_name1,  column_name2, ...,  column_namen | * | aggregate_function(expression)
+	FROM table_name
+	[WHERE search_condition]
+	[GROUP BY]
+	[HAVING]
+	[ORDER BY]
+	[LIMIT n]
+*/
+
+SELECT * FROM public.user WHERE age > 30;
+SELECT * FROM public.user WHERE fiscal_code = 'AB123CD45E678PQO';
+SELECT * FROM public.user WHERE fiscal_code LIKE 'AB1%';
+SELECT * FROM public.user WHERE fiscal_code LIKE '%QO';
+SELECT * FROM public.user WHERE fiscal_code LIKE '%123%';
+SELECT * FROM public.user WHERE fiscal_code LIKE 'A_123%';
+
+SELECT * FROM public.user
 SELECT * FROM public.signin;
+
+SELECT * FROM public.user AS u ORDER BY u.age DESC;
+SELECT DISTINCT city FROM public.user AS u;
+SELECT avg(age) FROM public.user
+SELECT sum(age) AS Somma_età FROM public.user
+SELECT city, count(*) FROM public.user GROUP BY city;
+SELECT city, avg(age) FROM public.user GROUP BY city;
+
+SELECT firstname, lastname, email, s.user_id AS num
+	FROM public.user AS u INNER JOIN public.signin AS s
+	ON u.id = s.user_id;
+	
+SELECT firstname, lastname, email 
+	FROM public.user LEFT JOIN public.signin 
+	ON public.user.id = public.signin.user_id;
